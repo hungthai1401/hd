@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:hd/models/category/category_model.dart';
 
 class CategoryResponseModel {
@@ -5,7 +6,8 @@ class CategoryResponseModel {
 
   final String error;
 
-  CategoryResponseModel({this.results, this.error}) : assert(results is List);
+  CategoryResponseModel({@required this.results, @required this.error})
+      : assert(results is List);
 
   CategoryResponseModel.fromJson(List json)
       : results = json.map((item) => CategoryModel.fromJson(item)).toList(),

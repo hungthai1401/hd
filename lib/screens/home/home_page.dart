@@ -40,7 +40,8 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(10.0),
         child: StreamBuilder<CategoryResponseModel>(
           stream: bloc.subject.stream,
-          builder: (context, AsyncSnapshot<CategoryResponseModel> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<CategoryResponseModel> snapshot) {
             if (snapshot.hasData) {
               List<CategoryModel> categories = snapshot.data.results;
               return GridView.builder(
