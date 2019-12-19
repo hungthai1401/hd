@@ -10,7 +10,6 @@ class CategoryService {
       Response response = await Dio().get(_endpoint);
       return CategoryResponseModel.fromJson(response.data);
     } catch (error) {
-      print(error);
       return CategoryResponseModel.withError(error);
     }
   }
