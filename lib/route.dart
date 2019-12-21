@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hd/screens/accessory/accessories_page.dart';
+import 'package:hd/screens/accessory/accessory_page.dart';
 import 'package:hd/screens/auth/login_page.dart';
 import 'package:hd/screens/home/home_page.dart';
 
@@ -16,6 +17,10 @@ PageRoute routes(routeSettings) {
     case AccessoriesPage.name:
       return MaterialPageRoute(
         builder: (BuildContext context) => AccessoriesPage(),
+      );
+    case AccessoryPage.name:
+      return MaterialPageRoute(
+        builder: (BuildContext context) => AccessoryPage(),
       );
     default:
       return MaterialPageRoute(
