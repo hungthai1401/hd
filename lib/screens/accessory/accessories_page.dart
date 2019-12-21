@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hd/blocs/accessories_bloc.dart';
 import 'package:hd/components/skeleton.dart';
 import 'package:hd/models/accessory/accessory_model.dart';
 import 'package:hd/models/accessory/accessory_response_model.dart';
 import 'package:hd/models/category/category_model.dart';
+import 'package:hd/screens/accessory/accessory_page.dart';
+import 'package:hd/screens/home/home_page.dart';
 
 class AccessoriesPage extends StatefulWidget {
   static const String name = '/accessories';
@@ -18,11 +21,16 @@ class AccessoriesPage extends StatefulWidget {
 
 class _AccessoriesPageState extends State<AccessoriesPage> {
   final AccessoriesBloc bloc = AccessoriesBloc();
+  CategoryModel category;
 
   @override
   void initState() {
     super.initState();
-    bloc.fetchAccessories(widget.category);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    category = widget.category;
+    bloc.fetchAccessories(category);
   }
 
   @override
@@ -30,7 +38,12 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.category.name,
+          category.name,
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () =>
+              Navigator.of(context).pushReplacementNamed(HomePage.name),
         ),
       ),
       body: SingleChildScrollView(
@@ -66,6 +79,15 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
                       child: Image.network(
                         accessory.image,
                         fit: BoxFit.cover,
+                      ),
+                    ),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AccessoryPage(
+                          category: category,
+                          accessory: accessory,
+                        ),
                       ),
                     ),
                   );
