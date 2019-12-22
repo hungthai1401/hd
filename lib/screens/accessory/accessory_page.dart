@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hd/blocs/accessory_bloc.dart';
 import 'package:hd/components/skeleton.dart';
 import 'package:hd/models/accessory/accessory_model.dart';
-import 'package:hd/models/accessory_image/accessory_image_model.dart';
 import 'package:hd/models/accessory_image/accessory_image_response_model.dart';
 import 'package:hd/models/category/category_model.dart';
 import 'package:hd/screens/accessory/accessories_page.dart';
+import 'package:hd/screens/accessory/components/accessory_image.dart';
+import 'package:hd/screens/accessory/components/camera_placeholder_image.dart';
+import 'package:hd/screens/accessory/components/captured_image.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AccessoryPage extends StatefulWidget {
   static const String name = '/accessory';
@@ -23,7 +29,9 @@ class AccessoryPage extends StatefulWidget {
 }
 
 class _AccessoryPageState extends State<AccessoryPage> {
-  bool isCaptured;
+  bool _isCaptured;
+  File _capturedImage;
+  bool _isSaved;
   AccessoryModel accessory;
   final AccessoryBloc bloc = AccessoryBloc();
 
@@ -36,103 +44,78 @@ class _AccessoryPageState extends State<AccessoryPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    this.isCaptured = false;
+    _isCaptured = false;
     accessory = widget.accessory;
+    _isSaved = false;
     bloc.findAccessoryImage(accessory);
   }
 
-  void _toggleCapture() {
+  Future _capture() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+
     setState(() {
-      this.isCaptured = !this.isCaptured;
+      _capturedImage = image;
+      _isCaptured = true;
     });
+  }
+
+  void _deleteCapturedImage() {
+    setState(() {
+      _capturedImage = null;
+      _isCaptured = false;
+      _isSaved = false;
+    });
+  }
+
+  void _showToast(BuildContext context, String message) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  Future<void> retrieveLostData() async {
+    final LostDataResponse response = await ImagePicker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+
+    if (response.file != null) {
+      setState(() {
+        _capturedImage = response.file;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget _accessoryImage(AccessoryImageModel accessoryImage) => Expanded(
-          child: Container(
-            constraints: new BoxConstraints.expand(
-              height: 200.0,
-            ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(accessoryImage.image),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        );
+    void _saveCapturedImage(BuildContext context) async {
+      if (_capturedImage == null) {
+        return;
+      }
 
-    final Widget _cameraPlaceHolder = GestureDetector(
-      child: Container(
-        constraints: new BoxConstraints.expand(
-          height: 200.0,
-        ),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-                'https://www.keh.com/skin/frontend/keh/default/images/placeholder-min.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-      onTap: () => _toggleCapture(),
-    );
+      try {
+        await ImageGallerySaver.saveImage(await _capturedImage.readAsBytes());
 
-    final Widget _capturedImage = Container(
-      constraints: new BoxConstraints.expand(
-        height: 200.0,
-      ),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(
-              'https://kuongngan.com/wp-content/uploads/2017/01/bugi-xe-m%C3%A1y-6.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            right: 0.0,
-            child: GestureDetector(
-              onTap: () => _toggleCapture(),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: CircleAvatar(
-                  radius: 14.0,
-                  backgroundColor: Colors.transparent,
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    final Widget _saveCapturedImageButton = RaisedButton(
-      onPressed: () => _toggleCapture(),
-      color: Colors.redAccent,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Text(
-          'save image'.toUpperCase(),
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-    );
+        _showToast(context, 'Success to save image');
+        setState(() {
+          _isSaved = true;
+        });
+      } catch (error) {
+        _showToast(context, 'Failed to save image');
+      }
+    }
 
     Widget _setCaptureImageWidget() {
-      return this.isCaptured ? _capturedImage : _cameraPlaceHolder;
+      return _isCaptured && _capturedImage != null
+          ? CapturedImage(
+              capturedImage: _capturedImage,
+              onDeleteCapturedImage: _deleteCapturedImage,
+            )
+          : CameraPlaceHolderImage(
+              onCapture: _capture,
+            );
     }
 
     return Scaffold(
@@ -159,30 +142,52 @@ class _AccessoryPageState extends State<AccessoryPage> {
             horizontal: 5.0,
           ),
           child: StreamBuilder<AccessoryImageResponse>(
-              stream: bloc.subject.stream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<AccessoryImageResponse> snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          _accessoryImage(snapshot.data.result),
-                          Expanded(
-                            child: _setCaptureImageWidget(),
-                          )
-                        ],
+            stream: bloc.subject.stream,
+            builder: (BuildContext context,
+                AsyncSnapshot<AccessoryImageResponse> snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        AccessoryImage(
+                          accessoryImage: snapshot.data.result,
+                        ),
+                        Expanded(
+                          child: _setCaptureImageWidget(),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Visibility(
+                      visible: !_isSaved,
+                      child: RaisedButton(
+                        onPressed: () => _saveCapturedImage(context),
+                        color: Colors.redAccent,
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                            'save image'.toUpperCase(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
                       ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      this.isCaptured ? _saveCapturedImageButton : Container(),
-                    ],
-                  );
-                } else {
-                  return Skeleton();
-                }
-              }),
+                    )
+                  ],
+                );
+              } else {
+                return Skeleton();
+              }
+            },
+          ),
         ),
       ),
     );
