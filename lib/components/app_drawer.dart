@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hd/screens/account/account_page.dart';
 import 'package:hd/screens/auth/login_page.dart';
 import 'package:hd/screens/home/home_page.dart';
 
@@ -22,7 +23,8 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(FontAwesomeIcons.user),
             title: Text('Account'),
-            onTap: () {},
+            onTap: () =>
+                Navigator.of(context).pushReplacementNamed(AccountPage.name),
           ),
           ListTile(
             leading: Icon(FontAwesomeIcons.signOutAlt),

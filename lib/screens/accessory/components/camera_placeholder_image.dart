@@ -9,7 +9,7 @@ class CameraPlaceHolderImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        constraints: new BoxConstraints.expand(
+        constraints: BoxConstraints.expand(
           height: 400.0,
         ),
         decoration: BoxDecoration(

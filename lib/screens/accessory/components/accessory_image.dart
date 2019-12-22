@@ -30,7 +30,7 @@ class AccessoryImage extends StatelessWidget {
       child: GestureDetector(
         onTap: () => _openGallery(context),
         child: Container(
-          constraints: new BoxConstraints.expand(
+          constraints: BoxConstraints.expand(
             height: 400.0,
           ),
           decoration: BoxDecoration(
