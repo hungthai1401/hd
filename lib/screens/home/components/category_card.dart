@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hd/models/category/category_model.dart';
-import 'package:hd/screens/accessory/accessories_page.dart';
+import 'package:hd/screens/sub_category/sub_categories_page.dart';
 
 class CategoryCard extends StatelessWidget {
   final CategoryModel category;
@@ -16,8 +18,14 @@ class CategoryCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(
-              child: Image.network(
-                category.image,
+              child: CachedNetworkImage(
+                imageUrl: category.image,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Icon(
+                  FontAwesomeIcons.redoAlt,
+                ),
               ),
             ),
             Text(
@@ -33,7 +41,7 @@ class CategoryCard extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AccessoriesPage(
+          builder: (context) => SubCategoriesPage(
             category: category,
           ),
         ),

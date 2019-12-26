@@ -6,14 +6,21 @@ class CategoryResponseModel {
 
   final String error;
 
-  CategoryResponseModel({@required this.results, @required this.error})
+  final int statusCode;
+
+  CategoryResponseModel(
+      {@required this.results, @required this.error, @required this.statusCode})
       : assert(results is List);
 
-  CategoryResponseModel.fromJson(List json)
-      : results = json.map((item) => CategoryModel.fromJson(item)).toList(),
+  CategoryResponseModel.fromJson(Map<String, dynamic> json, int statusCode)
+      : results = (json['data'] as List)
+            .map((item) => CategoryModel.fromJson(item))
+            .toList(),
+        statusCode = statusCode,
         error = '';
 
-  CategoryResponseModel.withError(String error)
+  CategoryResponseModel.withError(String error, int statusCode)
       : results = List(),
+        statusCode = statusCode,
         error = error;
 }

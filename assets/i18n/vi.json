@@ -1,0 +1,28 @@
+{
+  "username": "Tên đăng nhập",
+  "password": "Mật khẩu",
+  "fullname": "Họ và tên",
+  "phone": "Số điện thoại",
+  "address": "Địa chỉ",
+  "btn": {
+    "login": "Đăng nhập",
+    "save-image": "Lưu ảnh",
+    "recapture": "Chụp lại",
+    "logout": "Đăng xuất",
+    "yes": "Có",
+    "no": "Không",
+    "update": "Cập nhật"
+  },
+  "title": {
+    "home": "Màn hình chính",
+    "account": "Tài khoản"
+  },
+  "toast": {
+    "success-save-image": "Lưu ảnh thành công",
+    "failed-save-image": "Lưu ảnh thất bại"
+  },
+  "dialog": {
+    "logout": "Bạn có chắc chắn muốn đăng xuất hay không?"
+  },
+  "error": "Đã có lỗi xảy ra"
+}

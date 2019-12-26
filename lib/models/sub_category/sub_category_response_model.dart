@@ -1,25 +1,25 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hd/models/accessory/accessory_model.dart';
+import 'package:hd/models/sub_category/sub_category_model.dart';
 
-class AccessoryResponseModel {
-  final List<AccessoryModel> results;
+class SubCategoryResponse {
+  final List<SubCategoryModel> results;
 
   final String error;
 
   final int statusCode;
 
-  AccessoryResponseModel(
+  SubCategoryResponse(
       {@required this.results, @required this.error, @required this.statusCode})
       : assert(results is List);
 
-  AccessoryResponseModel.fromJson(Map<String, dynamic> json, int statusCode)
+  SubCategoryResponse.fromJson(Map<String, dynamic> json, int statusCode)
       : results = (json['data'] as List)
-            .map((item) => AccessoryModel.fromJson(item))
+            .map((item) => SubCategoryModel.fromJson(item))
             .toList(),
         statusCode = statusCode,
         error = '';
 
-  AccessoryResponseModel.withError(String error, int statusCode)
+  SubCategoryResponse.withError(String error, int statusCode)
       : results = List(),
         statusCode = statusCode,
         error = error;
