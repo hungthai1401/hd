@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:hd/components/app_drawer.dart';
+import 'package:hd/components/skeleton.dart';
 import 'package:hd/screens/home/home_page.dart';
+import 'package:hd/services/account_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountPage extends StatefulWidget {
   static const String name = '/profile';
@@ -10,45 +14,112 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  Future<SharedPreferences> _getSharedPreferences() async {
+    return await SharedPreferences.getInstance();
+  }
+
+  bool _isFailed;
+
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    this._isFailed = false;
+  }
+
+  Future _updateAccount() async {
+    bool result = await AccountService.updateAccount({
+      'password': _passwordController.text,
+      'full_name': _fullNameController.text,
+      'phone': _phoneController.text,
+      'address': _addressController.text
+    });
+    setState(() {
+      this._isFailed = !result;
+    });
+
+    if (result) {
+      Navigator.of(context).pushReplacementNamed(HomePage.name);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Widget _userName = TextFormField(
-      autofocus: false,
-      decoration: InputDecoration(
-        hintText: 'username'.toUpperCase(),
+    Widget _alert = Visibility(
+      visible: _isFailed,
+      child: Text(
+        FlutterI18n.translate(context, 'error'),
+        style: TextStyle(
+          color: Colors.redAccent,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
 
-    final Widget _password = TextFormField(
-      autofocus: false,
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'password'.toUpperCase(),
-      ),
-    );
+    Widget _userName(SharedPreferences _prefs) => TextFormField(
+          autofocus: false,
+          readOnly: true,
+          decoration: InputDecoration(
+            hintText: FlutterI18n.translate(context, 'username').toUpperCase(),
+          ),
+          initialValue: _prefs.getString('username'),
+        );
 
-    final Widget _phone = TextFormField(
-      autofocus: false,
-      decoration: InputDecoration(
-        hintText: 'phone'.toUpperCase(),
-      ),
-    );
+    Widget _password(SharedPreferences _prefs) => TextFormField(
+          controller: _passwordController,
+          autofocus: false,
+          obscureText: true,
+          decoration: InputDecoration(
+            hintText: FlutterI18n.translate(context, 'password').toUpperCase(),
+          ),
+        );
 
-    final Widget _fullName = TextFormField(
-      autofocus: false,
-      decoration: InputDecoration(
-        hintText: 'full name'.toUpperCase(),
-      ),
-    );
+    Widget _fullName(SharedPreferences _prefs) {
+      _fullNameController.text = _prefs.getString('fullname');
+      return TextFormField(
+        controller: _fullNameController,
+        autofocus: false,
+        decoration: InputDecoration(
+          hintText: FlutterI18n.translate(context, 'fullname').toUpperCase(),
+        ),
+      );
+    }
+
+    ;
+
+    Widget _phone(SharedPreferences _prefs) {
+      _phoneController.text = _prefs.getString('phone');
+      return TextFormField(
+        controller: _phoneController,
+        autofocus: false,
+        decoration: InputDecoration(
+          hintText: FlutterI18n.translate(context, 'phone').toUpperCase(),
+        ),
+      );
+    }
+
+    Widget _address(SharedPreferences _prefs) {
+      _addressController.text = _prefs.getString('address');
+      return TextFormField(
+        controller: _addressController,
+        autofocus: false,
+        decoration: InputDecoration(
+          hintText: FlutterI18n.translate(context, 'address').toUpperCase(),
+        ),
+      );
+    }
 
     final _saveButton = RaisedButton(
-      onPressed: () =>
-          Navigator.of(context).pushReplacementNamed(HomePage.name),
+      onPressed: () => _updateAccount(),
       color: Colors.redAccent,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Text(
-          'save'.toUpperCase(),
+          FlutterI18n.translate(context, 'btn.update').toUpperCase(),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -62,35 +133,55 @@ class _AccountPageState extends State<AccountPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account'),
+        title: Text(
+          FlutterI18n.translate(context, 'title.account'),
+        ),
       ),
       drawer: AppDrawer(),
-      body: Container(
-        padding: const EdgeInsets.all(30.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: 30.0,
-            ),
-            _userName,
-            SizedBox(
-              height: 30.0,
-            ),
-            _password,
-            SizedBox(
-              height: 30.0,
-            ),
-            _phone,
-            SizedBox(
-              height: 30.0,
-            ),
-            _fullName,
-            SizedBox(
-              height: 30.0,
-            ),
-            _saveButton,
-          ],
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+          future: _getSharedPreferences(),
+          builder: (BuildContext context,
+              AsyncSnapshot<SharedPreferences> snapshot) {
+            if (snapshot.hasData) {
+              SharedPreferences prefs = snapshot.data;
+              return Container(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    _alert,
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _userName(prefs),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _password(prefs),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _fullName(prefs),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _phone(prefs),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _address(prefs),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _saveButton,
+                  ],
+                ),
+              );
+            }
+
+            return Skeleton();
+          },
         ),
       ),
     );

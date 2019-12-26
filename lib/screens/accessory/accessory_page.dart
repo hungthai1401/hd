@@ -5,6 +5,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:hd/components/loading.dart';
 import 'package:hd/models/accessory/accessory_model.dart';
 import 'package:hd/models/category/category_model.dart';
 import 'package:hd/models/sub_category/sub_category_model.dart';
@@ -35,8 +37,10 @@ class AccessoryPage extends StatefulWidget {
 }
 
 class _AccessoryPageState extends State<AccessoryPage> {
+  static const DEFAULT_PIXEL_RATIO = 6.0;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final GlobalKey<ScaffoldState> _widgetKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<State> _widgetKey = new GlobalKey<State>();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   bool _isCaptured;
   File _capturedImage;
@@ -70,6 +74,7 @@ class _AccessoryPageState extends State<AccessoryPage> {
     setState(() {
       _capturedImage = null;
       _isCaptured = false;
+      _isSaved = false;
     });
     await _capture();
   }
@@ -95,30 +100,35 @@ class _AccessoryPageState extends State<AccessoryPage> {
     );
   }
 
-  void _saveCapturedImage() async {
+  void _captureWidget() async {
     if (_capturedImage == null) {
       return;
     }
 
     try {
-      await ImageGallerySaver.saveImage(await _capturedImage.readAsBytes());
-
-      _showToast('Success to save image');
+      Loading.showLoadingDialog(context, _keyLoader);
+      RenderRepaintBoundary boundary =
+          _widgetKey.currentContext.findRenderObject();
+      ui.Image image = await boundary.toImage(pixelRatio: DEFAULT_PIXEL_RATIO);
+      ByteData byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+      await ImageGallerySaver.saveImage(Uint8List.fromList(pngBytes));
+      _showToast(FlutterI18n.translate(context, 'toast.success-save-image'));
       setState(() {
         _isSaved = true;
       });
+      Navigator.of(
+        _keyLoader.currentContext,
+        rootNavigator: true,
+      ).pop();
     } catch (error) {
-      _showToast('Failed to save image');
+      _showToast(FlutterI18n.translate(context, 'toast.failed-save-image'));
+      Navigator.of(
+        _keyLoader.currentContext,
+        rootNavigator: true,
+      ).pop();
     }
-  }
-
-  void captureWidget() async {
-    RenderRepaintBoundary boundary =
-        _widgetKey.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-    await ImageGallerySaver.saveImage(Uint8List.fromList(pngBytes));
   }
 
   @override
@@ -189,12 +199,13 @@ class _AccessoryPageState extends State<AccessoryPage> {
                       Visibility(
                         visible: !_isSaved,
                         child: RaisedButton(
-                          onPressed: () => captureWidget(),
+                          onPressed: () => _captureWidget(),
                           color: Colors.redAccent,
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
-                              'save image'.toUpperCase(),
+                              FlutterI18n.translate(context, 'btn.save-image')
+                                  .toUpperCase(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -214,7 +225,8 @@ class _AccessoryPageState extends State<AccessoryPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Text(
-                              'recapture'.toUpperCase(),
+                              FlutterI18n.translate(context, 'btn.recapture')
+                                  .toUpperCase(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -225,7 +237,7 @@ class _AccessoryPageState extends State<AccessoryPage> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
           ),

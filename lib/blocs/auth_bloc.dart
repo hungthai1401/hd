@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:hd/models/user/user_model.dart';
 import 'package:hd/models/user/user_response_model.dart';
 import 'package:hd/services/auth_service.dart';
@@ -35,12 +36,13 @@ class AuthBloc with Validator {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', user.token);
       await prefs.setInt('id', user.id);
-      await prefs.setString('user_name', user.userName);
+      await prefs.setString('username', user.userName);
+      await prefs.setString('fullname', user.fullName);
       await prefs.setString('address', user.address);
       await prefs.setString('phone', user.phone);
       _authenticate.sink.add(true);
     } catch (e) {
-      _authenticate.sink.addError('Error');
+      _authenticate.sink.addError(FlutterI18n.translate(context, 'error'));
     }
   }
 

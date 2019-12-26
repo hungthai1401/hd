@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:hd/blocs/auth_bloc.dart';
 import 'package:hd/screens/home/home_page.dart';
 
@@ -31,7 +32,8 @@ class _LoginPageState extends State<LoginPage> {
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           return TextFormField(
             decoration: InputDecoration(
-              hintText: 'username'.toUpperCase(),
+              hintText:
+                  FlutterI18n.translate(context, 'username').toUpperCase(),
               errorText: snapshot.error,
             ),
             onChanged: bloc.changeUserName,
@@ -45,7 +47,8 @@ class _LoginPageState extends State<LoginPage> {
           return TextFormField(
             obscureText: true,
             decoration: InputDecoration(
-              hintText: 'password'.toUpperCase(),
+              hintText:
+                  FlutterI18n.translate(context, 'password').toUpperCase(),
               errorText: snapshot.error,
             ),
             onChanged: bloc.changePassword,
@@ -62,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Text(
-                'login'.toUpperCase(),
+                FlutterI18n.translate(context, 'btn.login').toUpperCase(),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

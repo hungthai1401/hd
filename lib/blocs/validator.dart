@@ -6,7 +6,7 @@ class Validator {
       if (userName.isNotEmpty) {
         sink.add(userName);
       } else {
-        sink.addError('Please enter username');
+        sink.addError('Hãy điền tên đăng nhập!');
       }
     },
   );
@@ -16,7 +16,7 @@ class Validator {
       if (password.isNotEmpty) {
         sink.add(password);
       } else {
-        sink.addError('Please enter password');
+        sink.addError('Hãy điền mật khẩu!');
       }
     },
   );

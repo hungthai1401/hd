@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:hd/blocs/category_bloc.dart';
 import 'package:hd/components/app_drawer.dart';
 import 'package:hd/components/skeleton.dart';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Home',
+          FlutterI18n.translate(context, 'title.home'),
         ),
       ),
       drawer: AppDrawer(),
