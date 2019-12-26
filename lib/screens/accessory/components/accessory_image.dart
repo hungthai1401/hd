@@ -1,19 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:hd/models/accessory_image/accessory_image_model.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hd/models/accessory/accessory_model.dart';
 import 'package:hd/screens/accessory/components/gallery_photo_view_wrapper.dart';
 
 class AccessoryImage extends StatelessWidget {
-  final AccessoryImageModel accessoryImage;
+  final AccessoryModel accessory;
 
-  AccessoryImage({@required this.accessoryImage})
-      : assert(accessoryImage is AccessoryImageModel);
+  AccessoryImage({@required this.accessory})
+      : assert(accessory is AccessoryModel);
 
   void _openGallery(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => GalleryPhotoViewWrapper(
-          item: NetworkImage(accessoryImage.image),
+          item: NetworkImage(accessory.image),
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
@@ -29,16 +31,18 @@ class AccessoryImage extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () => _openGallery(context),
-        child: Container(
-          constraints: BoxConstraints.expand(
-            height: 400.0,
-          ),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(accessoryImage.image),
-              fit: BoxFit.fill,
+        child: Column(
+          children: <Widget>[
+            CachedNetworkImage(
+              imageUrl: accessory.image,
+              placeholder: (context, url) => Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => Icon(
+                FontAwesomeIcons.redoAlt,
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

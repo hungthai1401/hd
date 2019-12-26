@@ -3,8 +3,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hd/screens/account/account_page.dart';
 import 'package:hd/screens/auth/login_page.dart';
 import 'package:hd/screens/home/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatelessWidget {
+  void _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('id');
+    await prefs.remove('user_name');
+    await prefs.remove('address');
+    await prefs.remove('phone');
+    Navigator.of(context).pushReplacementNamed(LoginPage.name);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -42,8 +53,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     FlatButton(
                       child: Text('yes'.toUpperCase()),
-                      onPressed: () => Navigator.of(context)
-                          .pushReplacementNamed(LoginPage.name),
+                      onPressed: () => _logout(context),
                     )
                   ],
                 );

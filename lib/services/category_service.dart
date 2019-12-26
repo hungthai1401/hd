@@ -1,16 +1,33 @@
 import 'package:dio/dio.dart';
 import 'package:hd/models/category/category_response_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryService {
   static const String _endpoint =
-      'http://www.mocky.io/v2/5dfa498b360000e999bd6bf0';
+      'http://171.244.49.71:7009/api/parent-category';
 
   static Future<CategoryResponseModel> fetchCategories() async {
     try {
-      Response response = await Dio().get(_endpoint);
-      return CategoryResponseModel.fromJson(response.data);
-    } catch (error) {
-      return CategoryResponseModel.withError(error);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token');
+      Dio _dio = Dio();
+
+      _dio.interceptors.add(InterceptorsWrapper(
+        onRequest: (RequestOptions options) async {
+          options.headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          };
+          return options;
+        },
+      ));
+
+      Response response = await _dio.get(_endpoint);
+      return CategoryResponseModel.fromJson(response.data, response.statusCode);
+    } on DioError catch (error) {
+      return CategoryResponseModel.withError(
+          error.toString(), error.response?.statusCode);
     }
   }
 }

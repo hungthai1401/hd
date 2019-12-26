@@ -5,7 +5,9 @@ import 'package:hd/components/app_drawer.dart';
 import 'package:hd/components/skeleton.dart';
 import 'package:hd/models/category/category_model.dart';
 import 'package:hd/models/category/category_response_model.dart';
+import 'package:hd/screens/auth/login_page.dart';
 import 'package:hd/screens/home/components/category_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   static const String name = '/home';
@@ -24,6 +26,17 @@ class _HomePageState extends State<HomePage> {
       DeviceOrientation.portraitUp,
     ]);
     bloc.fetchCategories();
+    bloc.subject.listen((response) async {
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.remove('token');
+        await prefs.remove('id');
+        await prefs.remove('user_name');
+        await prefs.remove('address');
+        await prefs.remove('phone');
+        Navigator.of(context).pushReplacementNamed(LoginPage.name);
+      }
+    });
   }
 
   @override
@@ -42,6 +55,15 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context,
               AsyncSnapshot<CategoryResponseModel> snapshot) {
             if (snapshot.hasData) {
+              if (snapshot.data.error != '') {
+                return Text(
+                  snapshot.data.error,
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                );
+              }
+
               List<CategoryModel> categories = snapshot.data.results;
               return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
