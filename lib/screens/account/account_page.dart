@@ -33,10 +33,10 @@ class _AccountPageState extends State<AccountPage> {
 
   Future _updateAccount() async {
     bool result = await AccountService.updateAccount({
-      'password': _passwordController.text,
-      'full_name': _fullNameController.text,
-      'phone': _phoneController.text,
-      'address': _addressController.text
+      'password': _passwordController.value.text,
+      'full_name': _fullNameController.value.text,
+      'phone': _phoneController.value.text,
+      'address': _addressController.value.text,
     });
     setState(() {
       this._isFailed = !result;

@@ -21,14 +21,21 @@ class AccountService {
         },
       ));
 
-      Response response = await _dio.put(_endpoint, data: data);
+      FormData formData = new FormData.fromMap(data);
+
+      Response response = await _dio.post(_endpoint, data: formData);
       Map<String, dynamic> json = response.data;
-      await prefs.setString('token', json['data']);
-      await prefs.setString('fullname', json['fullname']);
-      await prefs.setString('address', json['address']);
-      await prefs.setString('phone', json['phone']);
+
+      if (json['token'] != false) {
+        await prefs.setString('token', json['token']);
+      }
+
+      Map<String, dynamic> user = json['user'];
+      await prefs.setString('fullname', user['fullname']);
+      await prefs.setString('address', user['address']);
+      await prefs.setString('phone', user['phone']);
       return true;
-    } on DioError catch (error) {
+    } catch (error) {
       print(error.toString());
       return false;
     }
