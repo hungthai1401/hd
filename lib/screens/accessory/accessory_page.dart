@@ -16,6 +16,7 @@ import 'package:hd/screens/accessory/components/camera_placeholder_image.dart';
 import 'package:hd/screens/accessory/components/captured_image.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AccessoryPage extends StatefulWidget {
   static const String name = '/accessory';
@@ -61,7 +62,30 @@ class _AccessoryPageState extends State<AccessoryPage> {
     _isSaved = false;
   }
 
+  _checkPermission(PermissionGroup permissionGroup) async {
+    final PermissionHandler _permissionHandler = PermissionHandler();
+    var _permissionCameraStatus = await _permissionHandler.checkPermissionStatus(permissionGroup);
+    switch (_permissionCameraStatus) {
+      case PermissionStatus.granted:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  _requestPermission(PermissionGroup permissionGroup) async {
+    final PermissionHandler _permissionHandler = PermissionHandler();
+    _permissionHandler.requestPermissions([permissionGroup]);
+  }
+
   Future _capture() async {
+    var _optionalPermission = Platform.isAndroid ? PermissionGroup.storage : PermissionGroup.photos;
+    print(await _checkPermission(_optionalPermission));
+    if (await _checkPermission(_optionalPermission) == false) {
+      await _requestPermission(_optionalPermission);
+      return;
+    }
+
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
     setState(() {

@@ -33,6 +33,7 @@ dependencies:
   cached_network_image: ^2.0.0-rc
   shared_preferences: ^0.5.6
   flutter_i18n: ^0.8.2
+  permission_handler: ^4.0.0
 
 dev_dependencies:
   flutter_test:

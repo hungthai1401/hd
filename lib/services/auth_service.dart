@@ -6,10 +6,12 @@ class AuthService {
 
   static Future<UserResponseModel> attempt(
       String userName, String password) async {
-    Response response = await Dio().post(_endpoint, data: {
+    FormData formData = new FormData.fromMap({
       'username': userName,
       'password': password,
     });
+
+    Response response = await Dio().post(_endpoint, data: formData);
     return UserResponseModel.fromJson(response.data);
   }
 }
