@@ -11,11 +11,13 @@ import 'package:hd/models/accessory/accessory_model.dart';
 import 'package:hd/models/category/category_model.dart';
 import 'package:hd/models/sub_category/sub_category_model.dart';
 import 'package:hd/screens/accessory/accessories_page.dart';
+import 'package:hd/screens/accessory/components/accessory_description_image.dart';
 import 'package:hd/screens/accessory/components/accessory_image.dart';
 import 'package:hd/screens/accessory/components/camera_placeholder_image.dart';
 import 'package:hd/screens/accessory/components/captured_image.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AccessoryPage extends StatefulWidget {
   static const String name = '/accessory';
@@ -37,9 +39,9 @@ class AccessoryPage extends StatefulWidget {
 }
 
 class _AccessoryPageState extends State<AccessoryPage> {
-  static const DEFAULT_PIXEL_RATIO = 6.0;
+  static const DEFAULT_PIXEL_RATIO = 5.0;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final GlobalKey<State> _widgetKey = new GlobalKey<State>();
+  final GlobalKey _widgetKey = new GlobalKey();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   bool _isCaptured;
@@ -61,7 +63,29 @@ class _AccessoryPageState extends State<AccessoryPage> {
     _isSaved = false;
   }
 
+  _checkPermission(PermissionGroup permissionGroup) async {
+    final PermissionHandler _permissionHandler = PermissionHandler();
+    var _permissionCameraStatus = await _permissionHandler.checkPermissionStatus(permissionGroup);
+    switch (_permissionCameraStatus) {
+      case PermissionStatus.granted:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  _requestPermission(PermissionGroup permissionGroup) async {
+    final PermissionHandler _permissionHandler = PermissionHandler();
+    _permissionHandler.requestPermissions([permissionGroup]);
+  }
+
   Future _capture() async {
+    var _optionalPermission = Platform.isAndroid ? PermissionGroup.storage : PermissionGroup.photos;
+    if (await _checkPermission(_optionalPermission) == false) {
+      await _requestPermission(_optionalPermission);
+      return;
+    }
+
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
     setState(() {
@@ -123,6 +147,7 @@ class _AccessoryPageState extends State<AccessoryPage> {
         rootNavigator: true,
       ).pop();
     } catch (error) {
+      print(error);
       _showToast(FlutterI18n.translate(context, 'toast.failed-save-image'));
       Navigator.of(
         _keyLoader.currentContext,
@@ -182,14 +207,24 @@ class _AccessoryPageState extends State<AccessoryPage> {
                     children: <Widget>[
                       RepaintBoundary(
                         key: _widgetKey,
-                        child: Row(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            AccessoryImage(
+                            Flexible(
+                              child: Row(
+                                children: <Widget>[
+                                  AccessoryImage(
+                                    accessory: accessory,
+                                  ),
+                                  Expanded(
+                                    child: _setCaptureImageWidget(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            AccessoryDescriptionImage(
                               accessory: accessory,
                             ),
-                            Expanded(
-                              child: _setCaptureImageWidget(),
-                            )
                           ],
                         ),
                       ),

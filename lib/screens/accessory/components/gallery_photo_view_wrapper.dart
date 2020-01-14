@@ -60,7 +60,9 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
               builder: _buildItem,
               itemCount: 1,
               loadingChild: widget.loadingChild,
-              backgroundDecoration: widget.backgroundDecoration,
+              backgroundDecoration: BoxDecoration(
+                color: Colors.white,
+              ),
               pageController: widget.pageController,
               onPageChanged: onPageChanged,
               scrollDirection: widget.scrollDirection,
@@ -70,7 +72,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: Icon(FontAwesomeIcons.windowClose),
-                color: Colors.white,
+                color: Colors.black,
               ),
             )
           ],

@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>hd</string>
+	<string>Tư vấn phụ tùng</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -26,8 +26,10 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>This app users the camera to take pictures of accessories</key>
-	<string>Privacy - Camera Usage Description</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app users the camera to take pictures of accessories</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>This app users the photo gallery to save pictures of accessories</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

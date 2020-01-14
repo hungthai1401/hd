@@ -98,25 +98,35 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(30.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _alert(bloc),
-            SizedBox(
-              height: 30.0,
-            ),
-            _userName(bloc),
-            SizedBox(
-              height: 30.0,
-            ),
-            _password(bloc),
-            SizedBox(
-              height: 30.0,
-            ),
-            _loginButton(bloc),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 40.0,
+              ),
+              SizedBox(
+                child: Image.asset('assets/icon/icon.png'),
+                width: 150,
+                height: 150,
+              ),
+              _alert(bloc),
+              SizedBox(
+                height: 30.0,
+              ),
+              _userName(bloc),
+              SizedBox(
+                height: 30.0,
+              ),
+              _password(bloc),
+              SizedBox(
+                height: 30.0,
+              ),
+              _loginButton(bloc),
+            ],
+          ),
         ),
       ),
     );
