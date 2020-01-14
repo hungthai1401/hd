@@ -4,10 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hd/models/accessory/accessory_model.dart';
 import 'package:hd/screens/accessory/components/gallery_photo_view_wrapper.dart';
 
-class AccessoryImage extends StatelessWidget {
+class AccessoryDescriptionImage extends StatelessWidget {
   final AccessoryModel accessory;
 
-  AccessoryImage({@required this.accessory})
+  AccessoryDescriptionImage({@required this.accessory})
       : assert(accessory is AccessoryModel);
 
   void _openGallery(BuildContext context) {
@@ -15,7 +15,7 @@ class AccessoryImage extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => GalleryPhotoViewWrapper(
-          item: NetworkImage(accessory.image),
+          item: NetworkImage(accessory.imageDescription),
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
@@ -28,7 +28,7 @@ class AccessoryImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Flexible(
       child: GestureDetector(
         onTap: () => _openGallery(context),
         child: Column(
@@ -38,7 +38,7 @@ class AccessoryImage extends StatelessWidget {
                 color: Colors.white,
               ),
               child: CachedNetworkImage(
-                imageUrl: accessory.image,
+                imageUrl: accessory.imageDescription,
                 placeholder: (context, url) => Center(
                   child: CircularProgressIndicator(),
                 ),

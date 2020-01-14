@@ -91,6 +91,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
               return ListView.separated(
                 shrinkWrap: true,
                 itemCount: accessories.length,
+                physics: const NeverScrollableScrollPhysics(),
                 separatorBuilder: (BuildContext context, int index) =>
                     Divider(),
                 itemBuilder: (BuildContext context, int index) {

@@ -6,6 +6,8 @@ import 'package:hd/screens/splash/splash_page.dart';
 import 'package:hd/theme/theme.dart';
 
 class Application extends StatelessWidget {
+  final String _applicationName = 'Tư vấn phụ tùng';
+
   FlutterI18nDelegate flutterI18nDelegate;
 
   Application(this.flutterI18nDelegate);
@@ -13,7 +15,7 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HD',
+      title: _applicationName,
       theme: applicationTheme(),
       debugShowCheckedModeBanner: false,
       home: SplashPage(),
