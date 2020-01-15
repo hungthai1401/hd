@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AccessoryService {
   static Future<AccessoryResponseModel> fetchAccessories(
-      SubCategoryModel subCategory) async {
+      SubCategoryModel subCategory, String keyword) async {
     try {
       final String _endpoint =
           'http://171.244.49.71:7009/api/accessory/${subCategory.id}';
@@ -25,7 +25,7 @@ class AccessoryService {
         },
       ));
 
-      Response response = await _dio.get(_endpoint);
+      Response response = await _dio.get(_endpoint, queryParameters: { 'keyword': keyword, });
       return AccessoryResponseModel.fromJson(
           response.data, response.statusCode);
     } on DioError catch (error) {

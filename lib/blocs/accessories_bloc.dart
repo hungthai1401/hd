@@ -7,9 +7,9 @@ class AccessoriesBloc {
   final BehaviorSubject<AccessoryResponseModel> _subject =
       BehaviorSubject<AccessoryResponseModel>();
 
-  fetchAccessories(SubCategoryModel subCategory) async {
+  fetchAccessories(SubCategoryModel subCategory, String keyword) async {
     AccessoryResponseModel response =
-        await AccessoryService.fetchAccessories(subCategory);
+        await AccessoryService.fetchAccessories(subCategory, keyword);
     _subject.sink.add(response);
   }
 
