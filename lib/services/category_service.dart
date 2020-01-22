@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:hd/models/category/category_response_model.dart';
+import 'package:hd/utilities/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryService {
   static Future<CategoryResponseModel> fetchCategories() async {
     try {
-      final String _endpoint = '${FlutterConfig.get('API_URL')}/parent-category';
+      final String _endpoint = '${Constants.API_URL}/parent-category';
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token');
       Dio _dio = Dio();

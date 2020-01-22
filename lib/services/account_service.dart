@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:hd/utilities/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountService {
   static Future<bool> updateAccount(Map<String, dynamic> data) async {
     try {
-      final String _endpoint = '${FlutterConfig.get('API_URL')}/user';
+      final String _endpoint = '${Constants.API_URL}/user';
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token');
       Dio _dio = Dio();

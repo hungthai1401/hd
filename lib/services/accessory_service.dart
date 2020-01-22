@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:hd/models/accessory/accessory_response_model.dart';
 import 'package:hd/models/sub_category/sub_category_model.dart';
+import 'package:hd/utilities/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccessoryService {
@@ -9,7 +9,7 @@ class AccessoryService {
       SubCategoryModel subCategory, String keyword) async {
     try {
       final String _endpoint =
-          '${FlutterConfig.get('API_URL')}/accessory/${subCategory.id}';
+          '${Constants.API_URL}/accessory/${subCategory.id}';
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String token = prefs.getString('token');
