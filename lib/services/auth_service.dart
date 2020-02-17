@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:hd/models/user/user_response_model.dart';
+import 'package:hd/utilities/constants.dart';
 
 class AuthService {
-  static const String _endpoint = 'http://171.244.49.71:7009/api/auth/login';
-
   static Future<UserResponseModel> attempt(
       String userName, String password) async {
+    final String _endpoint = '${Constants.API_URL}/auth/login';
     FormData formData = new FormData.fromMap({
       'username': userName,
       'password': password,

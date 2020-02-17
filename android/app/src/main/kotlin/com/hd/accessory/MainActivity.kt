@@ -1,4 +1,4 @@
-package com.hd.hd
+package com.hd.accessory
 
 import android.os.Bundle
 
