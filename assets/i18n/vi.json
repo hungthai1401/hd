@@ -4,6 +4,7 @@
   "fullname": "Họ và tên",
   "phone": "Số điện thoại",
   "address": "Địa chỉ",
+  "search": "Tìm kiếm",
   "btn": {
     "login": "Đăng nhập",
     "save-image": "Lưu ảnh",

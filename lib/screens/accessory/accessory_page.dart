@@ -147,7 +147,6 @@ class _AccessoryPageState extends State<AccessoryPage> {
         rootNavigator: true,
       ).pop();
     } catch (error) {
-      print(error);
       _showToast(FlutterI18n.translate(context, 'toast.failed-save-image'));
       Navigator.of(
         _keyLoader.currentContext,

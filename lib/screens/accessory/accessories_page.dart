@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hd/blocs/accessories_bloc.dart';
 import 'package:hd/components/skeleton.dart';
@@ -38,7 +39,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
       DeviceOrientation.portraitUp,
     ]);
     subCategory = widget.subCategory;
-    bloc.fetchAccessories(subCategory);
+    bloc.fetchAccessories(subCategory, '');
     bloc.subject.listen((response) async {
       if (response.statusCode == 401 || response.statusCode == 403) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,6 +51,10 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         Navigator.of(context).pushReplacementNamed(LoginPage.name);
       }
     });
+  }
+
+  void onSearch(String keyword) {
+    bloc.fetchAccessories(subCategory, keyword);
   }
 
   @override
@@ -71,8 +76,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10.0),
+      body: SafeArea(
         child: StreamBuilder<AccessoryResponseModel>(
           stream: bloc.subject.stream,
           builder: (BuildContext context,
@@ -88,51 +92,75 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
               }
 
               List<AccessoryModel> accessories = snapshot.data.results;
-              return ListView.separated(
-                shrinkWrap: true,
-                itemCount: accessories.length,
-                physics: const NeverScrollableScrollPhysics(),
-                separatorBuilder: (BuildContext context, int index) =>
-                    Divider(),
-                itemBuilder: (BuildContext context, int index) {
-                  final AccessoryModel accessory = accessories[index];
-                  return ListTile(
-                    title: Text(
-                      accessory.name,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    leading: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: 80,
-                        minHeight: 80,
-                        maxWidth: 80,
-                        maxHeight: 80,
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: accessory.image,
-                        placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          FontAwesomeIcons.redoAlt,
+              return Container(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        onChanged: onSearch,
+                        decoration: InputDecoration(
+                          labelText: FlutterI18n.translate(context, 'search'),
+                          hintText: FlutterI18n.translate(context, 'search'),
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(25.0),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AccessoryPage(
-                          category: widget.category,
-                          subCategory: subCategory,
-                          accessory: accessory,
-                        ),
+                    Expanded(
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: accessories.length,
+                        physics: const BouncingScrollPhysics(),
+                        separatorBuilder: (BuildContext context, int index) =>
+                            Divider(),
+                        itemBuilder: (BuildContext context, int index) {
+                          final AccessoryModel accessory = accessories[index];
+                          return ListTile(
+                            title: Text(
+                              accessory.name,
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            leading: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: 80,
+                                minHeight: 80,
+                                maxWidth: 80,
+                                maxHeight: 80,
+                              ),
+                              child: CachedNetworkImage(
+                                imageUrl: accessory.image,
+                                placeholder: (context, url) => Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                errorWidget: (context, url, error) => Icon(
+                                  FontAwesomeIcons.redoAlt,
+                                ),
+                              ),
+                            ),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AccessoryPage(
+                                  category: widget.category,
+                                  subCategory: subCategory,
+                                  accessory: accessory,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
+                  ],
+                ),
               );
             } else {
               return Skeleton();
