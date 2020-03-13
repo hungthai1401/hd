@@ -28,8 +28,9 @@
 	<string>Main</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app users the camera to take pictures of accessories</string>
+	<string>The app needs permission to your camera in order to take photos of accessories and use them to compare with the other pictures</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>This app users the photo gallery to save pictures of accessories</string>
+    <string>The app needs permission to your camera roll in order to add photos you've already taken for see later</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
