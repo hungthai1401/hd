@@ -14,6 +14,7 @@ class AuthBloc with Validator {
   final BehaviorSubject<String> _userNameController = BehaviorSubject<String>();
   final BehaviorSubject<String> _passwordController = BehaviorSubject<String>();
   final BehaviorSubject<bool> _authenticate = BehaviorSubject<bool>();
+  final BehaviorSubject<bool> _showRegisterButton = BehaviorSubject<bool>();
 
   Function(String) get changeUserName => _userNameController.sink.add;
   Function(String) get changePassword => _passwordController.sink.add;
@@ -25,6 +26,16 @@ class AuthBloc with Validator {
   Stream<bool> get submitValid => CombineLatestStream.combine2(
       userName, password, (userName, password) => true);
   Stream<bool> get authenticate => _authenticate.stream;
+  Stream<bool> get hasRegisterButton => _showRegisterButton.stream;
+
+  showRegisterButton() async {
+    try {
+      bool response = await AuthService.showRegisterButton();
+      _showRegisterButton.sink.add(response);
+    } catch (e) {
+      _showRegisterButton.sink.add(false);
+    }
+  }
 
   attempt(BuildContext context) async {
     final _validUserName = _userNameController.value;
@@ -50,5 +61,6 @@ class AuthBloc with Validator {
     _userNameController.close();
     _passwordController.close();
     _authenticate.close();
+    _showRegisterButton.close();
   }
 }
