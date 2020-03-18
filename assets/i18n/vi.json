@@ -23,8 +23,7 @@
   },
   "toast": {
     "success-save-image": "Lưu ảnh thành công",
-    "failed-save-image": "Lưu ảnh thất bại",
-    "success-create-account": "Tạo tài khoản thành công"
+    "failed-save-image": "Lưu ảnh thất bại"
   },
   "dialog": {
     "logout": "Bạn có chắc chắn muốn đăng xuất hay không?"
