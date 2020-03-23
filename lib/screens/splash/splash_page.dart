@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hd/blocs/auth_bloc.dart';
 import 'package:hd/screens/auth/login_page.dart';
 import 'package:hd/screens/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,10 +10,22 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+
+  final AuthBloc bloc = AuthBloc();
+
   @override
   void initState() {
     super.initState();
-    checkToken();
+    bloc.showRegisterButton();
+    bloc.hasRegisterButton.listen((state) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (state) {
+        await prefs.setBool('show-account', false);
+        Navigator.of(context).pushReplacementNamed(HomePage.name);
+      } else {
+        checkToken();
+      }
+    });
   }
 
   void checkToken() async {

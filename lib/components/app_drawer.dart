@@ -14,8 +14,10 @@ class AppDrawer extends StatelessWidget {
     await _prefs.remove('token');
     await _prefs.remove('id');
     await _prefs.remove('username');
+    await _prefs.remove('fullname');
     await _prefs.remove('address');
     await _prefs.remove('phone');
+    await _prefs.remove('show-account');
     Navigator.of(context).pushReplacementNamed(LoginPage.name);
   }
 
@@ -50,36 +52,64 @@ class AppDrawer extends StatelessWidget {
             onTap: () =>
                 Navigator.of(context).pushReplacementNamed(HomePage.name),
           ),
-          ListTile(
-            leading: Icon(FontAwesomeIcons.user),
-            title: Text(FlutterI18n.translate(context, 'title.account')),
-            onTap: () =>
-                Navigator.of(context).pushReplacementNamed(AccountPage.name),
-          ),
-          ListTile(
-            leading: Icon(FontAwesomeIcons.signOutAlt),
-            title: Text(FlutterI18n.translate(context, 'btn.logout')),
-            onTap: () => showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(FlutterI18n.translate(context, 'dialog.logout')),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text(FlutterI18n.translate(context, 'btn.no')
-                          .toUpperCase()),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    FlatButton(
-                      child: Text(FlutterI18n.translate(context, 'btn.yes')
-                          .toUpperCase()),
-                      onPressed: () => _logout(context),
+          FutureBuilder(
+            future: _getSharedPreferences(),
+            builder: (BuildContext context,
+                AsyncSnapshot<SharedPreferences> snapshot) {
+              bool showAccount = false;
+              if (snapshot.hasData) {
+                showAccount = snapshot.data.getBool('show-account') ?? false;
+              }
+              return showAccount
+                  ? ListTile(
+                      leading: Icon(FontAwesomeIcons.user),
+                      title:
+                          Text(FlutterI18n.translate(context, 'title.account')),
+                      onTap: () => Navigator.of(context)
+                          .pushReplacementNamed(AccountPage.name),
                     )
-                  ],
-                );
-              },
-            ),
+                  : Container();
+            },
+          ),
+          FutureBuilder(
+            future: _getSharedPreferences(),
+            builder: (BuildContext context,
+                AsyncSnapshot<SharedPreferences> snapshot) {
+              bool showAccount = false;
+              if (snapshot.hasData) {
+                showAccount = snapshot.data.getBool('show-account') ?? false;
+              }
+              return showAccount
+                  ? ListTile(
+                      leading: Icon(FontAwesomeIcons.signOutAlt),
+                      title: Text(FlutterI18n.translate(context, 'btn.logout')),
+                      onTap: () => showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(FlutterI18n.translate(
+                                context, 'dialog.logout')),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text(
+                                    FlutterI18n.translate(context, 'btn.no')
+                                        .toUpperCase()),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                              FlatButton(
+                                child: Text(
+                                    FlutterI18n.translate(context, 'btn.yes')
+                                        .toUpperCase()),
+                                onPressed: () => _logout(context),
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    )
+                  : Container();
+            },
           ),
         ],
       ),

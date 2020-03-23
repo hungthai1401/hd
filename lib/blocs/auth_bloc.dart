@@ -51,6 +51,7 @@ class AuthBloc with Validator {
       await prefs.setString('fullname', user.fullName);
       await prefs.setString('address', user.address);
       await prefs.setString('phone', user.phone);
+      await prefs.setBool('show-account', true);
       _authenticate.sink.add(true);
     } catch (e) {
       _authenticate.sink.addError(FlutterI18n.translate(context, 'error'));
