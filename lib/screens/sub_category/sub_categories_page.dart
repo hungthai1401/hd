@@ -40,9 +40,11 @@ class _SubCategoriesPageState extends State<SubCategoriesPage> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.remove('token');
         await prefs.remove('id');
-        await prefs.remove('user_name');
+        await prefs.remove('username');
+        await prefs.remove('fullname');
         await prefs.remove('address');
         await prefs.remove('phone');
+        await prefs.remove('show-account');
         Navigator.of(context).pushReplacementNamed(LoginPage.name);
       }
     });

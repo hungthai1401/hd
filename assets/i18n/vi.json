@@ -7,6 +7,8 @@
   "search": "Tìm kiếm",
   "btn": {
     "login": "Đăng nhập",
+    "create-account": "Tạo tài khoản",
+    "register": "Đăng ký",
     "save-image": "Lưu ảnh",
     "recapture": "Chụp lại",
     "logout": "Đăng xuất",
@@ -16,7 +18,8 @@
   },
   "title": {
     "home": "Màn hình chính",
-    "account": "Tài khoản"
+    "account": "Tài khoản",
+    "register": "Đăng ký tài khoản"
   },
   "toast": {
     "success-save-image": "Lưu ảnh thành công",
