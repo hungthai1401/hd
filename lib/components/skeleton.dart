@@ -40,7 +40,7 @@ class Skeleton extends StatelessWidget {
                                   height: 8.0,
                                   color: Colors.white,
                                 ),
-                                Padding(
+                                const Padding(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 2.0,
                                   ),
@@ -50,7 +50,7 @@ class Skeleton extends StatelessWidget {
                                   height: 8.0,
                                   color: Colors.white,
                                 ),
-                                Padding(
+                                const Padding(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 2.0,
                                   ),

@@ -10,7 +10,6 @@ import 'package:hd/components/loading.dart';
 import 'package:hd/models/accessory/accessory_model.dart';
 import 'package:hd/models/category/category_model.dart';
 import 'package:hd/models/sub_category/sub_category_model.dart';
-import 'package:hd/screens/accessory/accessories_page.dart';
 import 'package:hd/screens/accessory/components/accessory_description_image.dart';
 import 'package:hd/screens/accessory/components/accessory_image.dart';
 import 'package:hd/screens/accessory/components/camera_placeholder_image.dart';
@@ -65,7 +64,8 @@ class _AccessoryPageState extends State<AccessoryPage> {
 
   _checkPermission(PermissionGroup permissionGroup) async {
     final PermissionHandler _permissionHandler = PermissionHandler();
-    var _permissionCameraStatus = await _permissionHandler.checkPermissionStatus(permissionGroup);
+    var _permissionCameraStatus =
+        await _permissionHandler.checkPermissionStatus(permissionGroup);
     switch (_permissionCameraStatus) {
       case PermissionStatus.granted:
         return true;
@@ -80,7 +80,8 @@ class _AccessoryPageState extends State<AccessoryPage> {
   }
 
   Future _capture() async {
-    var _optionalPermission = Platform.isAndroid ? PermissionGroup.storage : PermissionGroup.photos;
+    var _optionalPermission =
+        Platform.isAndroid ? PermissionGroup.storage : PermissionGroup.photos;
     if (await _checkPermission(_optionalPermission) == false) {
       await _requestPermission(_optionalPermission);
       return;
@@ -173,18 +174,6 @@ class _AccessoryPageState extends State<AccessoryPage> {
         title: Text(
           accessory.name,
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AccessoriesPage(
-                category: widget.category,
-                subCategory: widget.subCategory,
-              ),
-            ),
-          ),
-        ),
       ),
       body: SafeArea(
         child: Container(
@@ -195,10 +184,21 @@ class _AccessoryPageState extends State<AccessoryPage> {
           ),
           child: SingleChildScrollView(
             child: widget.subCategory.type == 1
-                ? Row(
+                ? Column(
                     children: <Widget>[
-                      AccessoryImage(
-                        accessory: accessory,
+                      Row(
+                        children: <Widget>[
+                          AccessoryImage(
+                            accessory: accessory,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          AccessoryDescriptionImage(
+                            accessory: accessory,
+                          ),
+                        ],
                       ),
                     ],
                   )
@@ -227,7 +227,7 @@ class _AccessoryPageState extends State<AccessoryPage> {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20.0,
                       ),
                       Visibility(

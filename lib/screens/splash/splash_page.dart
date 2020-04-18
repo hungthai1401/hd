@@ -10,7 +10,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   final AuthBloc bloc = AuthBloc();
 
   @override
@@ -42,8 +41,8 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
+      body: const Center(
+        child: const CircularProgressIndicator(),
       ),
     );
   }
