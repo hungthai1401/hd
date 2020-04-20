@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:hd/blocs/auth_bloc.dart';
+import 'package:hd/components/skeleton.dart';
+import 'package:hd/screens/auth/register_page.dart';
 import 'package:hd/screens/home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    bloc.showRegisterButton();
     bloc.authenticate.listen((state) {
       if (state) {
         Navigator.of(context).pushReplacementNamed(HomePage.name);
@@ -99,35 +102,75 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 40.0,
-              ),
-              SizedBox(
-                child: Image.asset('assets/icon/icon.png'),
-                width: 150,
-                height: 150,
-              ),
-              _alert(bloc),
-              SizedBox(
-                height: 30.0,
-              ),
-              _userName(bloc),
-              SizedBox(
-                height: 30.0,
-              ),
-              _password(bloc),
-              SizedBox(
-                height: 30.0,
-              ),
-              _loginButton(bloc),
-            ],
-          ),
-        ),
+        child: StreamBuilder<bool>(
+            stream: bloc.hasRegisterButton,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(
+                        height: 40.0,
+                      ),
+                      SizedBox(
+                        child: Image.asset('assets/icon/icon.png'),
+                        width: 150,
+                        height: 150,
+                      ),
+                      _alert(bloc),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      _userName(bloc),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      _password(bloc),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      _loginButton(bloc),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      snapshot.data
+                          ? GestureDetector(
+                              child: Container(
+                                child: Text(
+                                  FlutterI18n.translate(
+                                          context, 'btn.create-account')
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  RegisterPage.name,
+                                );
+                              },
+                            )
+                          : Container(),
+                    ],
+                  ),
+                );
+              } else {
+                return Container(
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      Skeleton(),
+                    ],
+                  ),
+                );
+              }
+            }),
       ),
     );
   }
