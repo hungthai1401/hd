@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
+                      const SizedBox(
                         height: 40.0,
                       ),
                       SizedBox(
@@ -120,19 +120,19 @@ class _LoginPageState extends State<LoginPage> {
                         height: 150,
                       ),
                       _alert(bloc),
-                      SizedBox(
+                      const SizedBox(
                         height: 30.0,
                       ),
                       _userName(bloc),
-                      SizedBox(
+                      const SizedBox(
                         height: 30.0,
                       ),
                       _password(bloc),
-                      SizedBox(
+                      const SizedBox(
                         height: 30.0,
                       ),
                       _loginButton(bloc),
-                      SizedBox(
+                      const SizedBox(
                         height: 20.0,
                       ),
                       snapshot.data
@@ -162,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                 return Container(
                   child: Column(
                     children: <Widget>[
-                      SizedBox(
+                      const SizedBox(
                         height: 30.0,
                       ),
                       Skeleton(),

@@ -15,10 +15,10 @@ class CameraPlaceHolderImage extends StatelessWidget {
           CachedNetworkImage(
             imageUrl:
                 'https://www.keh.com/skin/frontend/keh/default/images/placeholder-min.png',
-            placeholder: (context, url) => Center(
-              child: CircularProgressIndicator(),
+            placeholder: (context, url) => const Center(
+              child: const CircularProgressIndicator(),
             ),
-            errorWidget: (context, url, error) => Icon(
+            errorWidget: (context, url, error) => const Icon(
               FontAwesomeIcons.redoAlt,
             ),
           ),

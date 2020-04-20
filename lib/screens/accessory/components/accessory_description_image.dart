@@ -34,15 +34,15 @@ class AccessoryDescriptionImage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               child: CachedNetworkImage(
                 imageUrl: accessory.imageDescription,
-                placeholder: (context, url) => Center(
-                  child: CircularProgressIndicator(),
+                placeholder: (context, url) => const Center(
+                  child: const CircularProgressIndicator(),
                 ),
-                errorWidget: (context, url, error) => Icon(
+                errorWidget: (context, url, error) => const Icon(
                   FontAwesomeIcons.redoAlt,
                 ),
               ),

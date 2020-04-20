@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hd/blocs/accessories_bloc.dart';
 import 'package:hd/components/skeleton.dart';
 import 'package:hd/models/accessory/accessory_model.dart';
@@ -11,7 +9,6 @@ import 'package:hd/models/category/category_model.dart';
 import 'package:hd/models/sub_category/sub_category_model.dart';
 import 'package:hd/screens/accessory/accessory_page.dart';
 import 'package:hd/screens/auth/login_page.dart';
-import 'package:hd/screens/sub_category/sub_categories_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccessoriesPage extends StatefulWidget {
@@ -66,17 +63,6 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         title: Text(
           subCategory.name,
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SubCategoriesPage(
-                category: widget.category,
-              ),
-            ),
-          ),
-        ),
       ),
       body: SafeArea(
         child: StreamBuilder<AccessoryResponseModel>(
@@ -117,7 +103,8 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
                       child: ListView.separated(
                         shrinkWrap: true,
                         itemCount: accessories.length,
-                        physics: const BouncingScrollPhysics(),
+                        cacheExtent: double.infinity,
+                        physics: const AlwaysScrollableScrollPhysics(),
                         separatorBuilder: (BuildContext context, int index) =>
                             Divider(),
                         itemBuilder: (BuildContext context, int index) {
@@ -128,23 +115,6 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            leading: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: 80,
-                                minHeight: 80,
-                                maxWidth: 80,
-                                maxHeight: 80,
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl: accessory.image,
-                                placeholder: (context, url) => Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                                errorWidget: (context, url, error) => Icon(
-                                  FontAwesomeIcons.redoAlt,
-                                ),
                               ),
                             ),
                             onTap: () => Navigator.push(

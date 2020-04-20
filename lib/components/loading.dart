@@ -17,7 +17,7 @@ class Loading {
               Center(
                 child: Column(
                   children: [
-                    CircularProgressIndicator(),
+                    const CircularProgressIndicator(),
                   ],
                 ),
               )
